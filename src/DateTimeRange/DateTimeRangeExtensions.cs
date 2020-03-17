@@ -19,8 +19,17 @@ namespace System
         /// <param name="dateTimeRange"></param>
         /// <param name="dateTime"></param>
         /// <returns></returns>
-        public static bool Contains(this DateTimeRange dateTimeRange, DateTime dateTime) =>
-            dateTime >= dateTimeRange.Start && dateTime <= dateTimeRange.End;
+        public static bool Contains(this DateTimeRange dateTimeRange, DateTime dateTime, bool excludeStart = false, bool excludeEnd = false)
+        {
+            var ret = (excludeStart, excludeEnd) switch
+            {
+                (true, true) => dateTime > dateTimeRange.Start && dateTime < dateTimeRange.End,
+                (true, false) => dateTime > dateTimeRange.Start && dateTime <= dateTimeRange.End,
+                (false, true) => dateTime >= dateTimeRange.Start && dateTime < dateTimeRange.End,
+                (false, false) => dateTime >= dateTimeRange.Start && dateTime <= dateTimeRange.End,
+            };
+            return ret;
+        }
 
         /// <summary>
         /// Enumerates the <see cref="DateTimeRange"/>. Returns all <see cref="DateTime"/>s in steps of <paramref name="dateSpan"/>.
@@ -28,7 +37,7 @@ namespace System
         /// <param name="dateTimeRange">Range to be enumerated</param>
         /// <param name="dateSpan">Step between emitted values.</param>
         /// <returns></returns>
-        public static IEnumerable<DateTime> Enumerate(this DateTimeRange dateTimeRange, DateSpan dateSpan)
+        public static IEnumerable<DateTime> Enumerate(this DateTimeRange dateTimeRange, DateSpan dateSpan, bool excludeStart = false, bool excludeEnd = false)
         {
             TimeSpan step = dateSpan switch
             {
@@ -46,20 +55,22 @@ namespace System
             switch (dateSpan)
             {
                 case DateSpan.Month:
-                    DateTime resultMonth = dateTimeRange.Start;
+                     DateTime resultMonth = dateTimeRange.Start;
+                    if (excludeStart) resultMonth = resultMonth.AddMonths(1);
                     do
-                    {
+                    {  
                         yield return resultMonth;
                         resultMonth = resultMonth.AddMonths(1);
-                    } while (resultMonth <= dateTimeRange.End);
+                    } while (excludeEnd ? resultMonth.Month < dateTimeRange.End.Month : resultMonth.Month <= dateTimeRange.End.Month);
                     yield break;
                 case DateSpan.Year:
                     DateTime resultYear = dateTimeRange.Start;
+                    if (excludeStart) resultYear = resultYear.AddYears(1);
                     do
                     {
                         yield return resultYear;
                         resultYear = resultYear.AddYears(1);
-                    } while (resultYear <= dateTimeRange.End);
+                    } while (excludeEnd ? resultYear.Year < dateTimeRange.End.Year : resultYear.Year <= dateTimeRange.End.Year);
                     yield break;
             }
 
@@ -72,14 +83,15 @@ namespace System
         /// <param name="dateTimeRange">Range to be enumerated</param>
         /// <param name="step">Step between emitted values.</param>
         /// <returns></returns>
-        public static IEnumerable<DateTime> Enumerate(this DateTimeRange dateTimeRange, TimeSpan step)
+        public static IEnumerable<DateTime> Enumerate(this DateTimeRange dateTimeRange, TimeSpan step, bool excludeStart = false, bool excludeEnd = false)
         {
             DateTime result = dateTimeRange.Start;
+            if (excludeStart) result = result.Add(step);
             do
             {
                 yield return result;
                 result += step;
-            } while (result <= dateTimeRange.End);
+            } while (excludeEnd ? result < dateTimeRange.End : result <= dateTimeRange.End);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace DateTimeRangeTests
             DateTime dateTime = DateTime.Now.AddDays(1);
 
             // Act
-            var result = dateTimeRange.Contains(dateTime);
+            var result = dateTimeRange.Contains(dateTime: dateTime, excludeStart: true, excludeEnd: true);
 
             // Assert
             Assert.That(result);
@@ -47,7 +47,7 @@ namespace DateTimeRangeTests
             DateSpan dateSpan = DateSpan.Day;
 
             // Act
-            var result = dateTimeRange.Enumerate(dateSpan).ToArray();
+            var result = dateTimeRange.Enumerate(dateSpan, excludeStart: true, excludeEnd: true).ToArray();
 
             // Assert
             Assert.That(result.Length == 3);

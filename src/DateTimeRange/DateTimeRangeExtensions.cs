@@ -58,7 +58,7 @@ namespace System
                      DateTime resultMonth = dateTimeRange.Start;
                     if (excludeStart) resultMonth = resultMonth.AddMonths(1);
                     do
-                    {  
+                    {
                         yield return resultMonth;
                         resultMonth = resultMonth.AddMonths(1);
                     } while (excludeEnd ? resultMonth.Month < dateTimeRange.End.Month : resultMonth.Month <= dateTimeRange.End.Month);

@@ -8,13 +8,13 @@ namespace DateTimeRangeTests
     public class DateTimeRangeExtensionsTests
     {
         [Test]
-        public void Intersect_Test()
-        {
+        public void Intersect_Test() {
+
             // Arrange
             var a = DateTime.Now;
             var b = a.AddDays(-1);
             var c = a.AddDays(1);
-            
+
             DateTimeRange first = new DateTimeRange(b, a);
             DateTimeRange second = new DateTimeRange(a, c);
 
@@ -26,8 +26,8 @@ namespace DateTimeRangeTests
         }
 
         [Test]
-        public void Contains_Test()
-        {
+        public void Contains_Test() {
+
             // Arrange
             DateTimeRange dateTimeRange = new DateTimeRange(DateTime.Now, DateTime.Now.AddDays(2));
             DateTime dateTime = DateTime.Now.AddDays(1);
@@ -40,8 +40,8 @@ namespace DateTimeRangeTests
         }
 
         [Test]
-        public void Enumerate_Test()
-        {
+        public void Enumerate_Test() {
+
             // Arrange
             DateTimeRange dateTimeRange = new DateTimeRange(DateTime.Now.Date, DateTime.Now.Date.AddDays(2));
             DateSpan dateSpan = DateSpan.Day;
@@ -55,8 +55,8 @@ namespace DateTimeRangeTests
         }
 
         [Test]
-        public void Enumerate_Test2()
-        {
+        public void Enumerate_Test2() {
+
             // Arrange
             DateTimeRange dateTimeRange = new DateTimeRange(DateTime.Now.Date, DateTime.Now.Date.AddDays(2));
             TimeSpan step = new TimeSpan(1,0,0,0);

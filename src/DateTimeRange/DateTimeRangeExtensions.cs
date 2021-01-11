@@ -59,8 +59,8 @@ namespace System
                         yield return resultMonth;
                         resultMonth = resultMonth.AddMonths(1);
                     } while (excludeEnd
-                        ? Convert.ToInt32($"{resultMonth.Year}{ resultMonth.Month}") < Convert.ToInt32($"{dateTimeRange.End.Year}{dateTimeRange.End.Month}")
-                        : Convert.ToInt32($"{resultMonth.Year}{ resultMonth.Month}") <= Convert.ToInt32($"{dateTimeRange.End.Year}{dateTimeRange.End.Month}")
+                        ? Convert.ToInt32($"{resultMonth.Year}{GetTwoDigitMonth(resultMonth)}") < Convert.ToInt32($"{dateTimeRange.End.Year}{GetTwoDigitMonth(dateTimeRange.End)}")
+                        : Convert.ToInt32($"{resultMonth.Year}{GetTwoDigitMonth(resultMonth)}") <= Convert.ToInt32($"{dateTimeRange.End.Year}{GetTwoDigitMonth(dateTimeRange.End)}")
                     );
                     yield break;
                 case DateSpan.Year:
@@ -92,6 +92,14 @@ namespace System
                 yield return result;
                 result += step;
             } while (excludeEnd ? result < dateTimeRange.End : result <= dateTimeRange.End);
+        }
+
+        private static string GetTwoDigitMonth(DateTime date) {
+            var month = date.Month;
+            if (month < 10)
+                return $"0{month}";
+            else
+                return month.ToString();
         }
     }
 }

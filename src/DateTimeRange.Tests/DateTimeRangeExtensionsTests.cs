@@ -68,5 +68,18 @@ namespace DateTimeRangeTests
             Assert.That(result.Length == 3);
             Assert.That(result.SequenceEqual(new DateTime[] { DateTime.Now.Date, DateTime.Now.Date.AddDays(1), DateTime.Now.Date.AddDays(2) }));
         }
+
+        [Test]
+        public void Enumerate_Test3() {
+
+            // Arrange
+            DateTimeRange dateTimeRange = new DateTimeRange(new DateTime(2020,01,01), new DateTime(2021,02,01));
+
+            // Act
+            var result = dateTimeRange.Enumerate(DateSpan.Month,false,true).ToArray();
+
+            // Assert
+            Assert.That(result.Length == 13);
+        }
     }
 }

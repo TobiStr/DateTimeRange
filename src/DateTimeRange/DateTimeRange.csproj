@@ -4,7 +4,7 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>8.0</LangVersion>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>Tobias Streng</Authors>
 		<PackageId>DateRange</PackageId>
 		<PackageProjectUrl>https://github.com/TobiStr/DateTimeRange</PackageProjectUrl>

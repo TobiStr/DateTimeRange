@@ -19,9 +19,14 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
-		<PackageIcon>fernglas.png</PackageIcon>
+		<PackageIcon>calendar.png</PackageIcon>
 
 		<Product>DateRange</Product>
 		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\docs\readme.md" Pack="true" PackagePath="\"/>
+		<None Include="..\..\img\calendar.png" Pack="true" PackagePath="\"/>
+	</ItemGroup>
 </Project>

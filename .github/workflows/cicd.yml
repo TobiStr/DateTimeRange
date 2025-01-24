@@ -1,0 +1,89 @@
+name: Build, Test, and Deploy NuGet Package
+
+on:
+  push:
+    branches:
+      - main
+  pull_reDateTimeRange:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+  deploy:
+    name: Publish to NuGet
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch full history to access tags
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Generate version
+        id: version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 || echo "1.0.0")
+          PATCH=$(echo "$VERSION" | awk -F. '{print $3}')
+          NEW_PATCH=$((PATCH+1))
+          NEW_VERSION=$(echo "$VERSION" | awk -F. '{print $1"."$2}')".$NEW_PATCH"
+          echo "version=$NEW_VERSION" >> $GITHUB_ENV
+          echo "Generated version: $NEW_VERSION"
+
+      - name: Update NuGet version
+        run: |
+          sed -i "s/<PackageVersion>.*<\/PackageVersion>/<PackageVersion>${{ env.version }}<\/PackageVersion>/g" src/DateTimeRange/DateTimeRange.csproj
+
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Pack NuGet package
+        run: dotnet pack src/DateTimeRange/DateTimeRange.csproj --configuration Release --output ./nupkg
+
+      - name: Create and push new Git tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ env.version }}
+          git push origin ${{ env.version }}
+
+      - name: Push NuGet package
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push "./nupkg/*.nupkg" --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json

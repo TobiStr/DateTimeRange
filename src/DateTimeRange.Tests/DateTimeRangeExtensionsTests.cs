@@ -1,85 +1,115 @@
 using NUnit.Framework;
-using System;
-using System.Linq;
 
-namespace DateTimeRangeTests
+namespace DateTimeRangeTests;
+
+[TestFixture]
+public class DateTimeRangeExtensionsTests
 {
-    [TestFixture]
-    public class DateTimeRangeExtensionsTests
+    [Test]
+    public void Intersect_Test()
     {
-        [Test]
-        public void Intersect_Test() {
+        // Arrange
+        var a = DateTime.Now;
+        var b = a.AddDays(-1);
+        var c = a.AddDays(1);
 
-            // Arrange
-            var a = DateTime.Now;
-            var b = a.AddDays(-1);
-            var c = a.AddDays(1);
+        DateTimeRange first = new DateTimeRange(b, a);
+        DateTimeRange second = new DateTimeRange(a, c);
 
-            DateTimeRange first = new DateTimeRange(b, a);
-            DateTimeRange second = new DateTimeRange(a, c);
+        // Act
+        var result = first.Intersect(second);
 
-            // Act
-            var result = first.Intersect(second);
+        // Assert
+        Assert.That(result.Start == b && result.End == c);
+    }
 
-            // Assert
-            Assert.That(result.Start == b && result.End == c);
-        }
+    [Test]
+    public void Contains_Test()
+    {
+        // Arrange
+        DateTimeRange dateTimeRange = new DateTimeRange(DateTime.Now, DateTime.Now.AddDays(2));
+        DateTime dateTime = DateTime.Now.AddDays(1);
 
-        [Test]
-        public void Contains_Test() {
+        // Act
+        var result = dateTimeRange.Contains(
+            dateTime: dateTime,
+            excludeStart: true,
+            excludeEnd: true
+        );
 
-            // Arrange
-            DateTimeRange dateTimeRange = new DateTimeRange(DateTime.Now, DateTime.Now.AddDays(2));
-            DateTime dateTime = DateTime.Now.AddDays(1);
+        // Assert
+        Assert.That(result);
+    }
 
-            // Act
-            var result = dateTimeRange.Contains(dateTime: dateTime, excludeStart: true, excludeEnd: true);
+    [Test]
+    public void Enumerate_Test()
+    {
+        // Arrange
+        DateTimeRange dateTimeRange = new DateTimeRange(
+            DateTime.Now.Date,
+            DateTime.Now.Date.AddDays(2)
+        );
+        DateSpan dateSpan = DateSpan.Day;
 
-            // Assert
-            Assert.That(result);
-        }
+        // Act
+        var result = dateTimeRange
+            .Enumerate(dateSpan, excludeStart: true, excludeEnd: true)
+            .ToArray();
 
-        [Test]
-        public void Enumerate_Test() {
+        // Assert
+        Assert.That(result.Length == 3);
+        Assert.That(
+            result.SequenceEqual(
+                new DateTime[]
+                {
+                    DateTime.Now.Date,
+                    DateTime.Now.Date.AddDays(1),
+                    DateTime.Now.Date.AddDays(2),
+                }
+            )
+        );
+    }
 
-            // Arrange
-            DateTimeRange dateTimeRange = new DateTimeRange(DateTime.Now.Date, DateTime.Now.Date.AddDays(2));
-            DateSpan dateSpan = DateSpan.Day;
+    [Test]
+    public void Enumerate_Test2()
+    {
+        // Arrange
+        DateTimeRange dateTimeRange = new DateTimeRange(
+            DateTime.Now.Date,
+            DateTime.Now.Date.AddDays(2)
+        );
+        TimeSpan step = new TimeSpan(1, 0, 0, 0);
 
-            // Act
-            var result = dateTimeRange.Enumerate(dateSpan, excludeStart: true, excludeEnd: true).ToArray();
+        // Act
+        var result = dateTimeRange.Enumerate(step).ToArray();
 
-            // Assert
-            Assert.That(result.Length == 3);
-            Assert.That(result.SequenceEqual(new DateTime[] { DateTime.Now.Date, DateTime.Now.Date.AddDays(1), DateTime.Now.Date.AddDays(2) }));
-        }
+        // Assert
+        Assert.That(result.Length == 3);
+        Assert.That(
+            result.SequenceEqual(
+                new DateTime[]
+                {
+                    DateTime.Now.Date,
+                    DateTime.Now.Date.AddDays(1),
+                    DateTime.Now.Date.AddDays(2),
+                }
+            )
+        );
+    }
 
-        [Test]
-        public void Enumerate_Test2() {
+    [Test]
+    public void Enumerate_Test3()
+    {
+        // Arrange
+        DateTimeRange dateTimeRange = new DateTimeRange(
+            new DateTime(2020, 01, 01),
+            new DateTime(2021, 02, 01)
+        );
 
-            // Arrange
-            DateTimeRange dateTimeRange = new DateTimeRange(DateTime.Now.Date, DateTime.Now.Date.AddDays(2));
-            TimeSpan step = new TimeSpan(1,0,0,0);
+        // Act
+        var result = dateTimeRange.Enumerate(DateSpan.Month, false, true).ToArray();
 
-            // Act
-            var result = dateTimeRange.Enumerate(step).ToArray();
-
-            // Assert
-            Assert.That(result.Length == 3);
-            Assert.That(result.SequenceEqual(new DateTime[] { DateTime.Now.Date, DateTime.Now.Date.AddDays(1), DateTime.Now.Date.AddDays(2) }));
-        }
-
-        [Test]
-        public void Enumerate_Test3() {
-
-            // Arrange
-            DateTimeRange dateTimeRange = new DateTimeRange(new DateTime(2020,01,01), new DateTime(2021,02,01));
-
-            // Act
-            var result = dateTimeRange.Enumerate(DateSpan.Month,false,true).ToArray();
-
-            // Assert
-            Assert.That(result.Length == 13);
-        }
+        // Assert
+        Assert.That(result.Length == 13);
     }
 }

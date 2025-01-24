@@ -3,10 +3,10 @@ name: Build, Test, and Deploy NuGet Package
 on:
   push:
     branches:
-      - main
+      - master
   pull_reDateTimeRange:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
     name: Publish to NuGet
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout repository

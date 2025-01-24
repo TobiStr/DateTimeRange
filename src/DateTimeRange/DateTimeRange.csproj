@@ -1,20 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 		<LangVersion>8.0</LangVersion>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>1.0.2</Version>
-		<Authors>Tobias Streng</Authors>
+		<Features>strict</Features>
+
 		<PackageId>DateRange</PackageId>
-		<PackageProjectUrl>https://github.com/TobiStr/DateTimeRange</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/TobiStr/DateTimeRange</RepositoryUrl>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Product>DateRange</Product>
 		<Description>
 			An extension for System.DateTime to handle DateTimeRanges more efficiently.
 			With this package, you will be able to enumerate DateTimeRanges and check if a date is inside a range.
 		</Description>
+		<Authors>Tobias Streng</Authors>
+		<Copyright>Copyright Tobias Streng</Copyright>
+		<PackageVersion>1.0.0</PackageVersion>
+		<PackageProjectUrl>https://github.com/TobiStr/DateTimeRange</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/TobiStr/DateTimeRange</RepositoryUrl>
+		<PackageTags>date;time;range;dates</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+		<PackageIcon>fernglas.png</PackageIcon>
+
+		<Product>DateRange</Product>
 		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
 </Project>
